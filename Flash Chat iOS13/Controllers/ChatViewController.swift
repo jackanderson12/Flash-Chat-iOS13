@@ -11,8 +11,8 @@ import Firebase
 
 class ChatViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var messageTextfield: UITextField!
+    @IBOutlet weak var tableView: UITableView!
     
     var messages: [Message] = [
         Message(sender:"1@2.com", body: "Hey!"),
@@ -24,8 +24,10 @@ class ChatViewController: UIViewController {
         super.viewDidLoad()
         
         title = "⚡️FlashChat"
-        
+        tableView.dataSource = self
         navigationItem.hidesBackButton = true
+        
+        tableView.register(UINib(nibName: K.cellNibName, bundle: nil), forCellReuseIdentifier: K.cellIdentifier)
 
     }
     
@@ -41,3 +43,19 @@ class ChatViewController: UIViewController {
         }
     }
 }
+
+//MARK: - UITableViewDataSource
+
+extension ChatViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.cellIdentifier, for: indexPath) as! MessageCell
+        cell.textLabel?.text = messages[indexPath.row].body
+        return cell
+    }
+}
+
